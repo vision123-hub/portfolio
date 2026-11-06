@@ -4,25 +4,26 @@ A personal developer portfolio for **Vision Parajuli**, a Computer Science stude
 
 ## About
 
-The portfolio introduces Vision, shares skills developed through coursework, and highlights selected Web Programming course projects. It uses a luxury baby-pink, blush, black, and rose-gold visual style.
+The portfolio introduces Vision, shares skills developed through coursework, and highlights selected Web Programming course projects. Its dark, blush-pink, and rose-gold design features Vision's sunset photograph and a small animated Mochi cat that floats with the page.
 
 ## Technologies
 
 - HTML5 for the page structure and content
 - CSS3 for styling, responsive layouts, animations, and reduced-motion support
+- CSS animations for Mochi's tail, ears, eyes, and idle movement
 
-The portfolio is built with plain HTML and CSS and does not require a framework or build step.
+The portfolio does not require a framework, external libraries, or a build step.
 
 ## Portfolio sections
 
-- **Home** — Introduction, university and major, subtitle, and profile photo
+- **Home** — Introduction, university and major, subtitle, and sunset photograph
 - **About** — Short biography and portfolio overview
 - **Skills** — HTML, CSS, JavaScript, and Accessibility, with descriptions
 - **Projects** — Selected work from the Web Programming course
 
 ## Profile and projects
 
-The profile photo is loaded from Vision's GitHub avatar. The project cards link to the original course work:
+The hero photograph is an optimized JPEG made from Vision's original sunset photo and is stored at `assets/sunset.jpg`. Mochi is a decorative SVG in `index.html`; the cat design is based on the existing `cat-buddy.html` artwork. The project cards link to the original course work:
 
 1. **API Applications (Week 6)** — A collection of six browser applications that explore public data with JavaScript Fetch API.  
    [View the project](https://vision123-hub.github.io/WebProgramming_Assignment1/week%206/api-tasks.html)
@@ -33,7 +34,7 @@ The profile photo is loaded from Vision's GitHub avatar. The project cards link 
 
 ## View the portfolio
 
-Open [`index.html`](./index.html) in a web browser. The page links to [`styles.css`](./styles.css) for its styling.
+Open [`index.html`](./index.html) in a web browser. The page links to [`styles.css`](./styles.css) for its styling and animations.
 
 ## Repository
 

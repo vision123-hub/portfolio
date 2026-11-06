@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mochi the Interactive Cat 🐾</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cat-cream': '#fffdfa',
+                        'cat-pink': '#ffb7c5',
+                        'cat-pink-soft': '#ffd8e1',
+                        'cat-peach': '#ffe5d9',
+                        'cat-mint': '#d8e2dc',
+                        'cat-lavender': '#e8e5f5',
+                        'cat-yellow': '#fff1cc',
+                        'cat-dark': '#333238'
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #fffdfa 0%, #ffe5d9 50%, #e8e5f5 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            touch-action: none;
+        }
+
+        /* Smooth Cat Animations */
+        @keyframes tailWag {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(18deg); }
+        }
+        .animate-tail {
+            transform-origin: bottom left;
+            animation: tailWag 2.2s ease-in-out infinite;
+        }
+
+        @keyframes earTwitchLeft {
+            0%, 90%, 100% { transform: rotate(0deg); }
+            92% { transform: rotate(-8deg); }
+            95% { transform: rotate(4deg); }
+        }
+        @keyframes earTwitchRight {
+            0%, 85%, 100% { transform: rotate(0deg); }
+            87% { transform: rotate(8deg); }
+            90% { transform: rotate(-4deg); }
+        }
+        .animate-ear-left { transform-origin: bottom right; animation: earTwitchLeft 4s infinite; }
+        .animate-ear-right { transform-origin: bottom left; animation: earTwitchRight 4.5s infinite; }
+
+        @keyframes purrHeart {
+            0% { opacity: 1; transform: translateY(0) scale(0.6); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1.3); }
+        }
+        .heart-float {
+            position: absolute;
+            animation: purrHeart 1.3s ease-out forwards;
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        /* Floating Controls & Cards */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 183, 197, 0.4);
+            box-shadow: 0 10px 30px rgba(255, 183, 197, 0.2);
+        }
+
+        /* Laser Dot Pulsing */
+        .laser-dot {
+            width: 14px;
+            height: 14px;
+            background-color: #ff2a5f;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #ff2a5f, 0 0 20px #ff2a5f;
+            position: absolute;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 80;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #9a5267;
+            outline-offset: 3px;
+        }
+
+        #customizer-modal > div {
+            max-height: min(90vh, 42rem);
+            overflow-y: auto;
+        }
+
+        @media (max-width: 640px) {
+            header.fixed {
+                top: 0.75rem;
+                right: 0.75rem;
+                left: 0.75rem;
+                gap: 0.5rem;
+            }
+
+            header.fixed > div:first-child {
+                min-width: 0;
+                gap: 0.5rem;
+                padding: 0.5rem 0.65rem;
+            }
+
+            header.fixed > div:first-child > div {
+                min-width: 0;
+            }
+
+            header.fixed > div:first-child h1 {
+                font-size: 0.95rem;
+                white-space: nowrap;
+            }
+
+            header.fixed > div:first-child p {
+                font-size: 0.65rem;
+                white-space: nowrap;
+            }
+
+            header.fixed > div:first-child a {
+                font-size: 0.65rem;
+                white-space: nowrap;
+            }
+
+            header.fixed > div:last-child {
+                gap: 0.4rem;
+            }
+
+            header.fixed > div:last-child > button:last-child {
+                gap: 0.35rem;
+                padding: 0.55rem 0.65rem;
+                font-size: 0.7rem;
+            }
+
+            .fixed.bottom-6.left-1\/2 {
+                bottom: 0.75rem;
+                width: max-content;
+                max-width: calc(100vw - 1rem);
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.45rem;
+                padding: 0.5rem;
+            }
+
+            .fixed.bottom-6.left-1\/2 > button {
+                padding: 0.55rem 0.65rem;
+            }
+
+            #cat-svg-wrapper {
+                width: clamp(8rem, 38vw, 11rem);
+                height: auto;
+            }
+        }
+
+        @media (max-width: 400px) {
+            header.fixed > div:first-child > span,
+            header.fixed > div:first-child p {
+                display: none;
+            }
+
+            header.fixed > div:first-child h1 {
+                font-size: 0.85rem;
+            }
+
+            header.fixed > div:last-child > button:last-child {
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="relative font-sans text-cat-dark">
+
+    <!-- Top UI Header Bar -->
+    <header class="fixed top-4 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
+        <!-- Title Badge -->
+        <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 pointer-events-auto">
+            <span class="text-2xl animate-bounce">🐱</span>
+            <div>
+                <h1 class="font-display font-bold text-lg leading-tight text-cat-dark">Mochi Desktop Pet</h1>
+                <p class="text-xs text-cat-dark/70 font-semibold">Drag, pet, feed & play! 🐾</p>
+                <a class="text-xs font-bold text-cat-dark underline" href="index.html">← Back to portfolio</a>
+            </div>
+        </div>
+
+        <!-- Audio & Quick Controls -->
+        <div class="flex items-center gap-3 pointer-events-auto">
+            <button id="sound-btn" type="button" aria-label="Toggle sound" aria-pressed="true" onclick="toggleSound()" class="glass-panel w-11 h-11 rounded-2xl flex items-center justify-center text-cat-dark hover:bg-cat-pink-soft transition-all active:scale-95 shadow-sm">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-lg"></i>
+            </button>
+            <button type="button" onclick="openCustomizer()" class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-2 font-display font-bold text-sm text-cat-dark hover:bg-cat-pink-soft transition-all active:scale-95 shadow-sm">
+                <i class="fa-solid fa-wand-magic-sparkles text-cat-pink"></i>
+                <span>Customize</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Interactive Toy Bar (Bottom Center) -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 glass-panel p-2.5 rounded-3xl shadow-lg">
+        <!-- Laser Pointer Toggle -->
+        <button id="toy-laser" type="button" aria-pressed="false" onclick="toggleLaserMode()" class="px-4 py-2.5 rounded-2xl font-display font-bold text-xs flex items-center gap-2 transition-all bg-white border border-cat-pink/40 hover:bg-cat-peach">
+            <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
+            <span>Laser Pointer</span>
+        </button>
+
+        <!-- Yarn Ball Spawn -->
+        <button type="button" onclick="spawnYarn()" class="px-4 py-2.5 rounded-2xl font-display font-bold text-xs flex items-center gap-2 transition-all bg-white border border-cat-pink/40 hover:bg-cat-peach">
+            <span class="text-base">🧶</span>
+            <span>Toss Yarn</span>
+        </button>
+
+        <!-- Fish Treat Spawn -->
+        <button type="button" onclick="spawnFish()" class="px-4 py-2.5 rounded-2xl font-display font-bold text-xs flex items-center gap-2 transition-all bg-white border border-cat-pink/40 hover:bg-cat-peach">
+            <span class="text-base">🐟</span>
+            <span>Give Treat</span>
+        </button>
+
+        <!-- Reset Position -->
+        <button type="button" onclick="resetCatPosition()" class="p-2.5 rounded-2xl bg-white border border-cat-pink/40 text-cat-dark hover:bg-cat-pink-soft transition-all text-xs" title="Reset Position" aria-label="Reset Mochi's position">
+            <i class="fa-solid fa-rotate-left"></i>
+        </button>
+    </div>
+
+    <!-- Laser Dot Element -->
+    <div id="laser-dot" class="laser-dot hidden"></div>
+
+    <!-- MAIN MOVABLE CAT WIDGET CONTAINER -->
+    <div id="cat-widget" class="fixed z-50 cursor-grab active:cursor-grabbing transform -translate-x-1/2 -translate-y-1/2 select-none" style="left: 50vw; top: 50vh;">
+
+        <!-- Cat Speech / Emotion Bubble -->
+        <div id="speech-bubble" class="absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-3.5 py-1.5 rounded-2xl shadow-md border-2 border-cat-pink text-xs font-bold text-cat-dark whitespace-nowrap opacity-100 transition-all pointer-events-none flex items-center gap-1.5">
+            <span id="speech-emoji">😸</span>
+            <span id="speech-text">Purrr! Drag me around!</span>
+        </div>
+
+        <!-- CAT SVG CONTAINER -->
+        <div id="cat-svg-wrapper" class="relative w-44 h-44 transition-transform duration-100">
+
+            <!-- ACCESSORY: HAT OVERLAY -->
+            <div id="hat-container" class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none transition-all">
+                <!-- Hat rendered via JS -->
+            </div>
+
+            <svg id="cat-svg" viewBox="0 0 160 160" class="w-full h-full filter drop-shadow-lg">
+                <!-- Tail -->
+                <path id="cat-tail" class="animate-tail" d="M 125 110 Q 155 100 148 70 Q 142 55 130 65" stroke="#ffb7c5" stroke-width="12" stroke-linecap="round" fill="none"/>
+
+                <!-- Body -->
+                <ellipse id="cat-body" cx="80" cy="110" rx="45" ry="36" fill="#ffb7c5"/>
+                <!-- Belly Patch -->
+                <ellipse id="cat-belly" cx="80" cy="115" rx="28" ry="22" fill="#fffdfa"/>
+
+                <!-- Left Paw -->
+                <ellipse id="cat-paw-left" cx="52" cy="140" rx="12" ry="9" fill="#fffdfa" stroke="#ffb7c5" stroke-width="3"/>
+                <!-- Right Paw -->
+                <ellipse id="cat-paw-right" cx="108" cy="140" rx="12" ry="9" fill="#fffdfa" stroke="#ffb7c5" stroke-width="3"/>
+
+                <!-- Head -->
+                <circle id="cat-head" cx="80" cy="72" r="38" fill="#ffb7c5"/>
+
+                <!-- Ears Left & Right -->
+                <g id="ear-left-group" class="animate-ear-left">
+                    <polygon id="ear-left-outer" points="48,45 32,15 62,35" fill="#ffb7c5"/>
+                    <polygon points="50,42 36,20 60,34" fill="#ffd8e1"/>
+                </g>
+                <g id="ear-right-group" class="animate-ear-right">
+                    <polygon id="ear-right-outer" points="112,45 128,15 98,35" fill="#ffb7c5"/>
+                    <polygon points="110,42 124,20 100,34" fill="#ffd8e1"/>
+                </g>
+
+                <!-- Cheek Blush -->
+                <ellipse cx="54" cy="78" rx="6" ry="4" fill="#ff9ebb" opacity="0.6"/>
+                <ellipse cx="106" cy="78" rx="6" ry="4" fill="#ff9ebb" opacity="0.6"/>
+
+                <!-- Eyes Group (Rotatable & Animatable) -->
+                <g id="eyes-group">
+                    <!-- Left Eye Outer & Pupil -->
+                    <circle cx="62" cy="68" r="6.5" fill="#333238"/>
+                    <circle id="pupil-left" cx="64" cy="66" r="2.5" fill="#ffffff"/>
+
+                    <!-- Right Eye Outer & Pupil -->
+                    <circle cx="98" cy="68" r="6.5" fill="#333238"/>
+                    <circle id="pupil-right" cx="100" cy="66" r="2.5" fill="#ffffff"/>
+                </g>
+
+                <!-- Sleeping Eyes (Hidden by default) -->
+                <g id="sleeping-eyes" class="hidden">
+                    <path d="M 55 69 Q 62 74 69 69 M 91 69 Q 98 74 105 69" stroke="#333238" stroke-width="3" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Nose -->
+                <polygon points="80,77 76,73 84,73" fill="#ff7597"/>
+
+                <!-- Mouth -->
+                <path id="cat-mouth" d="M 74 81 Q 80 85 80 81 Q 80 85 86 81" stroke="#333238" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+                <!-- Whiskers Left -->
+                <line x1="48" y1="74" x2="28" y2="70" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+                <line x1="47" y1="78" x2="26" y2="78" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+
+                <!-- Whiskers Right -->
+                <line x1="112" y1="74" x2="132" y2="70" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+                <line x1="113" y1="78" x2="134" y2="78" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- CUSTOMIZATION MODAL -->
+    <div id="customizer-modal" class="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel bg-white w-full max-w-md rounded-3xl p-6 relative animate-in fade-in zoom-in duration-200">
+            <!-- Close Button -->
+            <button type="button" aria-label="Close customizer" onclick="closeCustomizer()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-cat-peach flex items-center justify-center text-cat-dark font-bold hover:bg-cat-pink transition-colors">
+                ✕
+            </button>
+
+            <h2 class="font-display font-bold text-xl text-cat-dark mb-1 flex items-center gap-2">
+                <span>🎀 Customize Mochi</span>
+            </h2>
+            <p class="text-xs text-cat-dark/70 mb-5 font-medium">Pick fur palettes and cute accessories!</p>
+
+            <div class="space-y-5">
+                <!-- Fur Color Picker -->
+                <div>
+                    <label class="block text-xs font-bold text-cat-dark mb-2">Fur Theme Color</label>
+                    <div class="grid grid-cols-5 gap-2.5">
+                        <button onclick="setFurTheme('pink')" class="h-10 rounded-xl bg-[#ffb7c5] border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-cat-dark hover:scale-105 transition-transform">Pink</button>
+                        <button onclick="setFurTheme('peach')" class="h-10 rounded-xl bg-[#ffe5d9] border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-cat-dark hover:scale-105 transition-transform">Peach</button>
+                        <button onclick="setFurTheme('calico')" class="h-10 rounded-xl bg-[#f4a261] border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-cat-dark hover:scale-105 transition-transform">Orange</button>
+                        <button onclick="setFurTheme('gray')" class="h-10 rounded-xl bg-[#d8e2dc] border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-cat-dark hover:scale-105 transition-transform">Mint/Gray</button>
+                        <button onclick="setFurTheme('dark')" class="h-10 rounded-xl bg-[#525059] border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white hover:scale-105 transition-transform">Tuxedo</button>
+                    </div>
+                </div>
+
+                <!-- Hats & Accessories -->
+                <div>
+                    <label class="block text-xs font-bold text-cat-dark mb-2">Accessories</label>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <button type="button" onclick="setHat('none')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">None</button>
+                        <button type="button" onclick="setHat('bow')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">🎀 Red Bow</button>
+                        <button type="button" onclick="setHat('party')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">🎉 Party Hat</button>
+                        <button type="button" onclick="setHat('frog')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">🐸 Frog Cap</button>
+                        <button type="button" onclick="setHat('flower')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">🌸 Flower Crown</button>
+                        <button type="button" onclick="setHat('crown')" class="py-2 rounded-xl bg-cat-peach/50 border border-cat-pink/40 text-xs font-bold hover:bg-cat-pink transition-colors">👑 Crown</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="closeCustomizer()" class="w-full mt-6 py-3 rounded-2xl bg-cat-pink text-cat-dark font-display font-bold hover:bg-cat-pink-soft transition-all shadow-sm">
+                Save & Play 🐾
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT PHYSICS & INTERACTION ENGINE -->
+    <script>
+        /* ================= WEB AUDIO SYNTHESIZER ================= */
+        let soundEnabled = true;
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (audioCtx) return audioCtx;
+            if (!AudioContextConstructor) {
+                console.warn('Web Audio is not supported in this browser.');
+                soundEnabled = false;
+                updateSoundControl();
+                return null;
+            }
+
+            try {
+                audioCtx = new AudioContextConstructor();
+                return audioCtx;
+            } catch (error) {
+                console.error('Unable to initialize Web Audio.', error);
+                soundEnabled = false;
+                updateSoundControl();
+                return null;
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundControl();
+        }
+
+        function updateSoundControl() {
+            document.getElementById('sound-icon').className = soundEnabled ? 'fa-solid fa-volume-high text-lg' : 'fa-solid fa-volume-xmark text-lg text-red-400';
+            document.getElementById('sound-btn').setAttribute('aria-pressed', String(soundEnabled));
+        }
+
+        function playMeowSound(pitch = 1) {
+            if (!soundEnabled) return;
+            const context = initAudio();
+            if (!context) return;
+            try {
+                const osc = context.createOscillator();
+                const gain = context.createGain();
+
+                osc.type = 'triangle';
+                const now = context.currentTime;
+
+                // Frequency contour for cute meow
+                osc.frequency.setValueAtTime(400 * pitch, now);
+                osc.frequency.exponentialRampToValueAtTime(750 * pitch, now + 0.15);
+                osc.frequency.exponentialRampToValueAtTime(500 * pitch, now + 0.35);
+
+                gain.gain.setValueAtTime(0.01, now);
+                gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+                osc.connect(gain);
+                gain.connect(context.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch (error) {
+                console.error('Unable to play the meow sound.', error);
+            }
+        }
+
+        function playPurrSound() {
+            if (!soundEnabled) return;
+            const context = initAudio();
+            if (!context) return;
+            try {
+                const osc = context.createOscillator();
+                const gain = context.createGain();
+                osc.type = 'sawtooth';
+                const now = context.currentTime;
+
+                osc.frequency.setValueAtTime(50, now);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(context.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch (error) {
+                console.error('Unable to play the purr sound.', error);
+            }
+        }
+
+        /* ================= INTERACTIVE TOYS & TREATS STATE ================= */
+        let laserActive = false;
+        let laserDot = null;
+        let activeItems = [];
+
+        /* ================= CAT WIDGET PHYSICS & DRAG ================= */
+        const catWidget = document.getElementById('cat-widget');
+        const catSvgWrapper = document.getElementById('cat-svg-wrapper');
+
+        let posX = window.innerWidth / 2;
+        let posY = window.innerHeight / 2;
+        let velX = 0;
+        let velY = 0;
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        const pupilLeft = document.getElementById('pupil-left');
+        const pupilRight = document.getElementById('pupil-right');
+
+        // Initialize element references on window load
+        window.addEventListener('DOMContentLoaded', () => {
+            laserDot = document.getElementById('laser-dot');
+        });
+
+        // Mouse & Touch Drag Events
+        function onPointerDown(e) {
+            if (e.target.closest('#customizer-modal') || e.target.closest('header') || e.target.closest('.fixed.bottom-6')) return;
+
+            isDragging = true;
+            const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+            const clientY = e.clientY ?? e.touches?.[0]?.clientY;
+            if (clientX === undefined || clientY === undefined) return;
+
+            dragOffsetX = clientX - posX;
+            dragOffsetY = clientY - posY;
+            lastMouseX = clientX;
+            lastMouseY = clientY;
+
+            setEmotion('playful', 'Wheeee! Hold on! 🐾');
+            playMeowSound(1.2);
+            createPurrHearts(clientX, clientY);
+
+            catSvgWrapper.style.transform = 'scale(1.15) rotate(6deg)';
+        }
+
+        function onPointerMove(e) {
+            const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+            const clientY = e.clientY ?? e.touches?.[0]?.clientY;
+            if (clientX === undefined || clientY === undefined) return;
+
+            if (isDragging) {
+                velX = (clientX - lastMouseX) * 0.8;
+                velY = (clientY - lastMouseY) * 0.8;
+
+                posX = clientX - dragOffsetX;
+                posY = clientY - dragOffsetY;
+
+                lastMouseX = clientX;
+                lastMouseY = clientY;
+
+                updateCatTransform();
+            } else if (laserActive) {
+                // Track eyes towards laser pointer
+                trackLaser(clientX, clientY);
+            }
+        }
+
+        function onPointerUp() {
+            if (isDragging) {
+                isDragging = false;
+                catSvgWrapper.style.transform = 'scale(1) rotate(0deg)';
+                setEmotion('happy', 'Purrr... landed! ✨');
+                playPurrSound();
+            }
+        }
+
+        catWidget.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+
+        catWidget.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('touchend', onPointerUp);
+        window.addEventListener('touchcancel', onPointerUp);
+
+        window.addEventListener('resize', () => {
+            posX = Math.min(posX, window.innerWidth - 70);
+            posY = Math.min(posY, window.innerHeight - 70);
+            updateCatTransform();
+        });
+
+        // Continuous Physics Loop (Gravity, Inertia, Elastic Screen Bouncing)
+        function physicsLoop() {
+            if (!isDragging) {
+                // Apply Gravity & Friction
+                velY += 0.35; // Gravity
+                velX *= 0.95; // Air Friction
+                velY *= 0.96;
+
+                posX += velX;
+                posY += velY;
+
+                const radius = 70;
+                // Bounce Off Floor
+                if (posY > window.innerHeight - radius) {
+                    posY = window.innerHeight - radius;
+                    velY = -velY * 0.55; // Elastic Bounce
+                    if (Math.abs(velY) > 2) playPurrSound();
+                }
+                // Bounce Off Ceiling
+                if (posY < radius + 50) {
+                    posY = radius + 50;
+                    velY = -velY * 0.5;
+                }
+                // Bounce Off Walls
+                if (posX > window.innerWidth - radius) {
+                    posX = window.innerWidth - radius;
+                    velX = -velX * 0.6;
+                }
+                if (posX < radius) {
+                    posX = radius;
+                    velX = -velX * 0.6;
+                }
+
+                updateCatTransform();
+            }
+
+            // Move towards treats/toys if active
+            updateToyInteractions();
+
+            requestAnimationFrame(physicsLoop);
+        }
+        physicsLoop();
+
+        function updateCatTransform() {
+            catWidget.style.left = `${posX}px`;
+            catWidget.style.top = `${posY}px`;
+        }
+
+        function resetCatPosition() {
+            posX = window.innerWidth / 2;
+            posY = window.innerHeight / 2;
+            velX = 0;
+            velY = 0;
+            updateCatTransform();
+            setEmotion('happy', 'Back in cozy spot! 🌸');
+            playMeowSound(1);
+        }
+
+        /* ================= EMOTIONS & SPEECH ================= */
+        const speechText = document.getElementById('speech-text');
+        const speechEmoji = document.getElementById('speech-emoji');
+        const sleepingEyes = document.getElementById('sleeping-eyes');
+        const eyesGroup = document.getElementById('eyes-group');
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeCustomizer();
+        });
+
+        function setEmotion(state, message) {
+            speechText.innerText = message;
+
+            if (state === 'sleepy') {
+                speechEmoji.innerText = '💤';
+                sleepingEyes.classList.remove('hidden');
+                eyesGroup.classList.add('hidden');
+            } else if (state === 'playful') {
+                speechEmoji.innerText = '😸';
+                sleepingEyes.classList.add('hidden');
+                eyesGroup.classList.remove('hidden');
+            } else if (state === 'hungry') {
+                speechEmoji.innerText = '🐟';
+                sleepingEyes.classList.add('hidden');
+                eyesGroup.classList.remove('hidden');
+            } else {
+                speechEmoji.innerText = '🐾';
+                sleepingEyes.classList.add('hidden');
+                eyesGroup.classList.remove('hidden');
+            }
+        }
+
+        function createPurrHearts(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float text-xl';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            heart.innerHTML = ['💖', '🐾', '✨', '🌸'][Math.floor(Math.random() * 4)];
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1300);
+        }
+
+        /* ================= INTERACTIVE TOYS & TREATS HANDLERS ================= */
+        function toggleLaserMode() {
+            laserActive = !laserActive;
+            if (!laserDot) laserDot = document.getElementById('laser-dot');
+            const btn = document.getElementById('toy-laser');
+            if (laserActive) {
+                laserDot.classList.remove('hidden');
+                btn.classList.add('bg-cat-pink');
+                btn.setAttribute('aria-pressed', 'true');
+                setEmotion('playful', 'Ooh! Red dot chase! 🔴');
+                playMeowSound(1.3);
+            } else {
+                laserDot.classList.add('hidden');
+                btn.classList.remove('bg-cat-pink');
+                btn.setAttribute('aria-pressed', 'false');
+                pupilLeft.setAttribute('cx', '64');
+                pupilLeft.setAttribute('cy', '66');
+                pupilRight.setAttribute('cx', '100');
+                pupilRight.setAttribute('cy', '66');
+                setEmotion('happy', 'Good game! 🐾');
+            }
+        }
+
+        function trackLaser(x, y) {
+            if (!laserDot) laserDot = document.getElementById('laser-dot');
+            if (laserDot) {
+                laserDot.style.left = `${x}px`;
+                laserDot.style.top = `${y}px`;
+            }
+
+            const eyeOffsetX = Math.max(-2.5, Math.min(2.5, (x - posX) / 55));
+            const eyeOffsetY = Math.max(-2.5, Math.min(2.5, (y - posY) / 55));
+            pupilLeft.setAttribute('cx', String(64 + eyeOffsetX));
+            pupilLeft.setAttribute('cy', String(66 + eyeOffsetY));
+            pupilRight.setAttribute('cx', String(100 + eyeOffsetX));
+            pupilRight.setAttribute('cy', String(66 + eyeOffsetY));
+
+            if (!isDragging) {
+                const dx = x - posX;
+                const dy = y - posY;
+                if (Math.hypot(dx, dy) > 30) {
+                    velX += dx * 0.015;
+                    velY += dy * 0.015;
+                }
+            }
+        }
+
+        function spawnYarn() {
+            const yarn = document.createElement('div');
+            yarn.className = 'fixed z-30 text-3xl cursor-pointer pointer-events-auto transition-transform hover:scale-110';
+            const startX = Math.random() * (window.innerWidth - 100) + 50;
+            yarn.style.left = `${startX}px`;
+            yarn.style.top = `60px`;
+            yarn.innerText = '🧶';
+
+            document.body.appendChild(yarn);
+
+            activeItems.push({
+                el: yarn,
+                x: startX,
+                y: 60,
+                vy: 2,
+                type: 'yarn'
+            });
+
+            setEmotion('playful', 'Yarn ball! Pounce! 🧶');
+            playMeowSound(1.1);
+        }
+
+        function spawnFish() {
+            const fish = document.createElement('div');
+            fish.className = 'fixed z-30 text-3xl cursor-pointer pointer-events-auto transition-transform hover:scale-110';
+            const startX = Math.random() * (window.innerWidth - 100) + 50;
+            fish.style.left = `${startX}px`;
+            fish.style.top = `60px`;
+            fish.innerText = '🐟';
+
+            document.body.appendChild(fish);
+
+            activeItems.push({
+                el: fish,
+                x: startX,
+                y: 60,
+                vy: 2,
+                type: 'fish'
+            });
+
+            setEmotion('hungry', 'Yum! Fish treat! 🐟');
+            playMeowSound(1.4);
+        }
+
+        function updateToyInteractions() {
+            for (let i = activeItems.length - 1; i >= 0; i--) {
+                let item = activeItems[i];
+                // Fall physics for toys
+                if (item.y < window.innerHeight - 80) {
+                    item.vy += 0.25;
+                    item.y += item.vy;
+                } else {
+                    item.y = window.innerHeight - 80;
+                }
+
+                item.el.style.left = `${item.x}px`;
+                item.el.style.top = `${item.y}px`;
+
+                // Check distance to cat
+                const dist = Math.hypot(item.x - posX, item.y - posY);
+                if (dist < 60) {
+                    // Cat touches toy/treat
+                    createPurrHearts(item.x, item.y);
+                    playPurrSound();
+                    if (item.type === 'fish') {
+                        setEmotion('happy', 'Nom nom! Tasty fish! 😋');
+                    } else {
+                        setEmotion('playful', 'Got the yarn! 🎉');
+                    }
+                    item.el.remove();
+                    activeItems.splice(i, 1);
+                }
+            }
+        }
+
+        /* ================= CUSTOMIZER OPTIONS ================= */
+        const modal = document.getElementById('customizer-modal');
+
+        function openCustomizer() {
+            modal.classList.remove('hidden');
+        }
+        function closeCustomizer() {
+            modal.classList.add('hidden');
+        }
+
+        function setFurTheme(theme) {
+            const body = document.getElementById('cat-body');
+            const head = document.getElementById('cat-head');
+            const tail = document.getElementById('cat-tail');
+            const earL = document.getElementById('ear-left-outer');
+            const earR = document.getElementById('ear-right-outer');
+            const pawL = document.getElementById('cat-paw-left');
+            const pawR = document.getElementById('cat-paw-right');
+
+            const themes = {
+                pink: { main: '#ffb7c5', stroke: '#ffb7c5' },
+                peach: { main: '#ffe5d9', stroke: '#ffe5d9' },
+                calico: { main: '#f4a261', stroke: '#f4a261' },
+                gray: { main: '#d8e2dc', stroke: '#d8e2dc' },
+                dark: { main: '#525059', stroke: '#525059' }
+            };
+
+            const t = themes[theme] || themes.pink;
+            body.setAttribute('fill', t.main);
+            head.setAttribute('fill', t.main);
+            tail.setAttribute('stroke', t.main);
+            earL.setAttribute('fill', t.main);
+            earR.setAttribute('fill', t.main);
+            pawL.setAttribute('stroke', t.main);
+            pawR.setAttribute('stroke', t.main);
+
+            playMeowSound(1.2);
+        }
+
+        function setHat(type) {
+            const container = document.getElementById('hat-container');
+            const accessories = {
+                none: '',
+                bow: '🎀',
+                party: '🎉',
+                frog: '🐸',
+                flower: '🌸',
+                crown: '👑'
+            };
+            const accessory = accessories[type];
+            container.innerHTML = accessory ? `<span class="text-3xl filter drop-shadow">${accessory}</span>` : '';
+            playMeowSound(1.3);
+        }
+    </script>
+</body>
+</html>

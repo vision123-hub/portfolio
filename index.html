@@ -29,7 +29,7 @@
         <section class="hero page-width" id="home" aria-labelledby="hero-title">
             <div class="hero-copy">
                 <p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> Gachon University · Computer Science</p>
-                <h1 id="hero-title">A thoughtful<br>approach to <span>building.</span></h1>
+                <h1 id="hero-title">Hi, I'm <span>Vision Parajuli.</span></h1>
                 <p class="hero-subtitle">Computer Science Student &amp; Aspiring Software Developer</p>
                 <p class="hero-bio">I'm a Computer Science student at Gachon University, interested in programming, web development, and building practical projects.</p>
                 <a class="button button-dark" href="#projects">Explore my work <span aria-hidden="true">↓</span></a>
@@ -39,14 +39,14 @@
                 <div class="portrait-frame">
                     <img
                         class="portrait"
-                        src="https://avatars.githubusercontent.com/u/325994551?v=4"
-                        alt="Vision Parajuli's GitHub profile photo"
-                        width="460"
-                        height="520"
+                        src="assets/sunset.jpg"
+                        alt="A person sitting with their back to the camera, looking over a city skyline at sunset"
+                        width="1500"
+                        height="2000"
                         fetchpriority="high"
                     >
                 </div>
-                <p class="portrait-caption"><span aria-hidden="true">✦</span> Curious by nature. Building with purpose.</p>
+                <p class="portrait-caption"><span aria-hidden="true">✦</span> A quiet moment beneath the evening sky.</p>
             </div>
             <span class="hero-index" aria-hidden="true">PORTFOLIO&nbsp; / &nbsp;2026</span>
         </section>
@@ -121,5 +121,79 @@
             <a href="https://github.com/vision123-hub" target="_blank" rel="noopener noreferrer">Visit GitHub <span aria-hidden="true">↗</span></a>
         </div>
     </footer>
+
+    <div class="mochi-pet" aria-hidden="true">
+        <svg viewBox="0 0 160 160" role="presentation" focusable="false">
+            <path class="mochi-tail" d="M 125 110 Q 155 100 148 70 Q 142 55 130 65" stroke="#ffb7c5" stroke-width="12" stroke-linecap="round" fill="none"/>
+            <g class="mochi-body">
+                <ellipse cx="80" cy="110" rx="45" ry="36" fill="#ffb7c5"/>
+                <ellipse cx="80" cy="115" rx="28" ry="22" fill="#fffdfa"/>
+                <ellipse cx="52" cy="140" rx="12" ry="9" fill="#fffdfa" stroke="#ffb7c5" stroke-width="3"/>
+                <ellipse cx="108" cy="140" rx="12" ry="9" fill="#fffdfa" stroke="#ffb7c5" stroke-width="3"/>
+                <circle cx="80" cy="72" r="38" fill="#ffb7c5"/>
+                <g class="mochi-ear mochi-ear-left">
+                    <polygon points="48,45 32,15 62,35" fill="#ffb7c5"/>
+                    <polygon points="50,42 36,20 60,34" fill="#ffd8e1"/>
+                </g>
+                <g class="mochi-ear mochi-ear-right">
+                    <polygon points="112,45 128,15 98,35" fill="#ffb7c5"/>
+                    <polygon points="110,42 124,20 100,34" fill="#ffd8e1"/>
+                </g>
+                <ellipse cx="54" cy="78" rx="6" ry="4" fill="#ff9ebb" opacity="0.6"/>
+                <ellipse cx="106" cy="78" rx="6" ry="4" fill="#ff9ebb" opacity="0.6"/>
+                <g class="mochi-eyes">
+                    <circle cx="62" cy="68" r="6.5" fill="#333238"/>
+                    <circle cx="64" cy="66" r="2.5" fill="#ffffff"/>
+                    <circle cx="98" cy="68" r="6.5" fill="#333238"/>
+                    <circle cx="100" cy="66" r="2.5" fill="#ffffff"/>
+                </g>
+                <polygon points="80,77 76,73 84,73" fill="#ff7597"/>
+                <path d="M 74 81 Q 80 85 80 81 Q 80 85 86 81" stroke="#333238" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <line x1="48" y1="74" x2="28" y2="70" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+                <line x1="47" y1="78" x2="26" y2="78" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+                <line x1="112" y1="74" x2="132" y2="70" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+                <line x1="113" y1="78" x2="134" y2="78" stroke="#333238" stroke-width="2" stroke-linecap="round"/>
+            </g>
+        </svg>
+    </div>
+    <script>
+        const mochiPet = document.querySelector('.mochi-pet');
+        let mochiPositionFrame = 0;
+
+        function positionMochi() {
+            mochiPositionFrame = 0;
+            const petBounds = mochiPet.getBoundingClientRect();
+            const margin = 12;
+            const content = [...document.querySelectorAll('h1, h2, h3, p, a, button, img, li, span')]
+                .filter(element => !mochiPet.contains(element))
+                .map(element => element.getBoundingClientRect())
+                .filter(rect => rect.width && rect.height && rect.bottom > 0 && rect.top < innerHeight);
+            const x = innerWidth - petBounds.width - margin;
+            let position;
+
+            for (let y = innerHeight - petBounds.height - margin; y >= margin; y -= 16) {
+                if (!content.some(rect =>
+                    x < rect.right && x + petBounds.width > rect.left &&
+                    y < rect.bottom && y + petBounds.height > rect.top
+                )) {
+                    position = { x, y };
+                    break;
+                }
+            }
+
+            position ||= { x, y: innerHeight - petBounds.height - margin };
+
+            mochiPet.style.left = `${position.x}px`;
+            mochiPet.style.top = `${position.y}px`;
+        }
+
+        function scheduleMochiPosition() {
+            if (!mochiPositionFrame) mochiPositionFrame = requestAnimationFrame(positionMochi);
+        }
+
+        window.addEventListener('scroll', scheduleMochiPosition, { passive: true });
+        window.addEventListener('resize', scheduleMochiPosition);
+        positionMochi();
+    </script>
 </body>
 </html>

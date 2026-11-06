@@ -243,14 +243,19 @@ p {
 
 .portrait-frame {
     position: relative;
+    width: 100%;
+    aspect-ratio: 1;
     padding: 0.8rem;
     border: 1px solid var(--rose-gold);
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .portrait-frame::before {
     position: absolute;
     inset: 0.3rem;
     border: 1px solid rgb(245 220 226 / 46%);
+    border-radius: 50%;
     content: "";
     pointer-events: none;
 }
@@ -258,11 +263,11 @@ p {
 .portrait {
     display: block;
     width: 100%;
-    aspect-ratio: 0.9;
+    height: 100%;
+    aspect-ratio: 1;
     object-fit: cover;
-    object-position: center;
+    object-position: 50% 100%;
     background: var(--pink);
-    filter: saturate(0.82);
 }
 
 .portrait-caption {
@@ -327,6 +332,84 @@ p {
 
 .skills-section {
     padding-block: clamp(4.5rem, 8vw, 7rem);
+}
+
+.mochi-pet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: clamp(3.5rem, 5vw, 4.25rem);
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 8px 8px rgb(37 24 29 / 18%));
+    transition: left 240ms ease, top 240ms ease;
+}
+
+.mochi-pet svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    animation: mochi-float 5s ease-in-out infinite;
+}
+
+.mochi-tail {
+    transform-box: fill-box;
+    transform-origin: 0% 50%;
+    animation: mochi-tail-wag 2.4s ease-in-out infinite;
+}
+
+.mochi-body {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: mochi-body-sway 3.6s ease-in-out infinite;
+}
+
+.mochi-ear {
+    transform-box: fill-box;
+}
+
+.mochi-ear-left {
+    transform-origin: 100% 100%;
+    animation: mochi-ear-twitch 5s ease-in-out infinite;
+}
+
+.mochi-ear-right {
+    transform-origin: 0% 100%;
+    animation: mochi-ear-twitch 5.8s ease-in-out infinite;
+}
+
+.mochi-eyes {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: mochi-blink 4.8s ease-in-out infinite;
+}
+
+@keyframes mochi-float {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-5px) rotate(1deg); }
+}
+
+@keyframes mochi-tail-wag {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+}
+
+@keyframes mochi-body-sway {
+    0%, 100% { transform: translateY(0) rotate(-0.5deg); }
+    50% { transform: translateY(-1px) rotate(0.5deg); }
+}
+
+@keyframes mochi-ear-twitch {
+    0%, 92%, 100% { transform: rotate(0deg); }
+    94% { transform: rotate(5deg); }
+    97% { transform: rotate(-2deg); }
+}
+
+@keyframes mochi-blink {
+    0%, 94%, 100% { transform: scaleY(1); }
+    95%, 97% { transform: scaleY(0.08); }
 }
 
 .section-heading {
@@ -552,10 +635,16 @@ p {
 
     .navigation {
         min-height: 70px;
+        flex-wrap: wrap;
+        row-gap: 0.8rem;
+        padding-block: 0.8rem;
     }
 
     .navigation-links {
+        order: 3;
+        width: 100%;
         gap: 0.85rem;
+        justify-content: center;
     }
 
     .navigation-links a,
@@ -609,6 +698,17 @@ p {
         justify-content: center;
         padding-block: 1rem;
         text-align: center;
+    }
+
+    .mochi-pet {
+        width: clamp(2.75rem, 12vw, 3.5rem);
+        opacity: 0.9;
+    }
+}
+
+@media (max-width: 400px) {
+    .mochi-pet {
+        width: 2.75rem;
     }
 }
 
