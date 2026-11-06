@@ -35,6 +35,7 @@ The hero photograph is an optimized JPEG made from Vision's original sunset phot
 ## View the portfolio
 
 Open [`index.html`](./index.html) in a web browser. The page links to [`styles.css`](./styles.css) for its styling and animations.
+GitHub Pages displays [`404.html`](./404.html) when a visitor follows a missing or outdated page link.
 
 ## Repository
 

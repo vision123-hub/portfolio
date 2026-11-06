@@ -591,6 +591,45 @@ p {
     color: var(--text);
 }
 
+.not-found {
+    display: flex;
+    min-height: 65vh;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-block: 4rem;
+}
+
+.not-found h1 {
+    max-width: 13ch;
+    margin-bottom: 1rem;
+    color: var(--pink-deep);
+    font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", Georgia, serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 1;
+}
+
+.not-found-message {
+    max-width: 28rem;
+    margin-bottom: 1.8rem;
+    color: var(--muted);
+}
+
+.not-found-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.not-found-projects-link {
+    color: var(--pink);
+    font-size: 0.78rem;
+    text-underline-offset: 0.25em;
+}
+
 @keyframes rise-in {
     from {
         opacity: 0;
