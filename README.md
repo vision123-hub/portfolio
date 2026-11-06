@@ -23,7 +23,7 @@ The portfolio does not require a framework, external libraries, or a build step.
 
 ## Profile and projects
 
-The hero photograph is an optimized JPEG made from Vision's original sunset photo and is stored at `assets/sunset.jpg`. Mochi is a decorative SVG in `index.html`; the cat design is based on the existing `cat-buddy.html` artwork. The project cards link to the original course work:
+The hero photograph is an optimized JPEG made from Vision's original sunset photo and is stored at `assets/sunset.jpg`. The browser tab uses a matching SVG monogram icon from `assets/favicon.svg`. Mochi is a decorative SVG in `index.html`; the cat design is based on the existing `cat-buddy.html` artwork. The project cards link to the original course work:
 
 1. **API Applications (Week 6)** — A collection of six browser applications that explore public data with JavaScript Fetch API.  
    [View the project](https://vision123-hub.github.io/WebProgramming_Assignment1/week%206/api-tasks.html)
